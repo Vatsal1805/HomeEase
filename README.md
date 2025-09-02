@@ -2,6 +2,14 @@
 
 A full-stack home services platform built with React and Node.js that connects homeowners with trusted service providers.
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-HomeEase-blue?style=for-the-badge&logo=github)](https://github.com/Vatsal1805/HomeEase)
+
+## 📋 Repository Information
+
+- **Repository URL**: https://github.com/Vatsal1805/HomeEase.git
+- **Owner**: Vatsal1805
+- **Version**: 1.0.0
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -13,8 +21,8 @@ A full-stack home services platform built with React and Node.js that connects h
 
 1. **Clone and navigate to the project:**
 ```bash
-git clone https://github.com/Patevansh/HomeEase.git
-cd HomeEase/homeease-app
+git clone https://github.com/Vatsal1805/HomeEase.git
+cd HomeEase
 ```
 
 2. **Backend Setup:**
@@ -34,12 +42,12 @@ npm start
 
 4. **Access the application:**
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+- Backend API: http://localhost:5001
 
 ## 🏗️ Project Structure
 
 ```
-homeease-app/
+HomeEase/
 ├── backend/                    # Express.js API Server
 │   ├── config/                # Configuration files
 │   │   └── passport.js        # OAuth strategies
@@ -166,22 +174,26 @@ JWT_EXPIRE=7d
 
 # Server Configuration
 NODE_ENV=development
-PORT=5000
+PORT=5001
 FRONTEND_URL=http://localhost:3000
 
-# Auto Admin Creation
-ADMIN_FIRST_NAME=Admin
-ADMIN_LAST_NAME=User
-ADMIN_EMAIL=admin@homeease.com
-ADMIN_PHONE=9999999999
-ADMIN_PASSWORD=admin123
+# Auto Admin Creation (Configure these securely)
+ADMIN_FIRST_NAME=your_admin_first_name
+ADMIN_LAST_NAME=your_admin_last_name
+ADMIN_EMAIL=your_admin_email@domain.com
+ADMIN_PHONE=your_admin_phone
+ADMIN_PASSWORD=your_secure_admin_password
 
 # OAuth Configuration (Optional)
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 FACEBOOK_APP_ID=your_facebook_app_id
 FACEBOOK_APP_SECRET=your_facebook_app_secret
+```
 
+⚠️ **Security Warning**: Always change the default admin credentials before deploying to production. Never use the example values in a live environment.
+
+```env
 # Email Configuration (Optional)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -189,17 +201,17 @@ EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_password
 
 # Payment Configuration (Optional)
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 ```
 
 ## 🔑 Default Login Credentials
 
-The system automatically creates an admin account:
+The system automatically creates an admin account on first startup.
 
 **Admin Account:**
-- Email: `admin@homeease.com`
-- Password: `admin123`
+- Email: As configured in your `.env` file
+- Password: As configured in your `.env` file
 
 **Test Customer Account:**
 - Register as a customer through the frontend
