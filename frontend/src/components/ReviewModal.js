@@ -112,11 +112,11 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-white rounded-xl max-w-md w-full"
+        className="bg-white rounded-xl max-w-md w-full max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b">
+        <div className="flex justify-between items-center p-6 border-b flex-shrink-0">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Rate Your Experience</h3>
             <p className="text-sm text-gray-600">Booking #{booking.bookingId}</p>
@@ -129,8 +129,10 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
+        {/* Content - Scrollable */}
+        <div className="p-6 space-y-6 flex-1 overflow-y-auto"
+          style={{ maxHeight: 'calc(90vh - 140px)' }}
+        >
           {/* Service Info */}
           <div className="bg-gray-50 rounded-lg p-4">
             <h4 className="font-medium text-gray-900 mb-2">Service Details</h4>
@@ -216,7 +218,7 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 p-6 border-t">
+        <div className="flex justify-end gap-3 p-6 border-t flex-shrink-0 bg-white">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
