@@ -4,6 +4,7 @@ const Service = require('../models/Service');
 const User = require('../models/User');
 const { auth } = require('../middleware/auth');
 const { body, validationResult } = require('express-validator');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
 
@@ -150,6 +151,19 @@ router.post('/', auth, [
 
     // Populate the booking with service details
     await booking.populate('services.service');
+
+    // Send confirmation email to customer
+    try {
+      const emailResult = await emailService.sendBookingStatusNotification(booking, 'pending');
+      if (emailResult.success) {
+        console.log(`📧 Booking confirmation email sent for booking ${booking.bookingId}`);
+      } else {
+        console.log(`⚠️ Failed to send booking confirmation email: ${emailResult.error}`);
+      }
+    } catch (emailError) {
+      console.error('Error sending booking confirmation email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     res.status(201).json({
       success: true,
@@ -305,6 +319,7 @@ router.put('/:id/status', [
     }
 
     // Update status
+    const oldStatus = booking.status;
     booking.status = status;
 
     if (status === 'completed') {
@@ -318,6 +333,24 @@ router.put('/:id/status', [
     }
 
     await booking.save();
+
+    // Send email notification if status changed
+    if (oldStatus !== status) {
+      try {
+        // Populate booking with customer details for email
+        await booking.populate('customer', 'firstName lastName email');
+        
+        const emailResult = await emailService.sendBookingStatusNotification(booking, status);
+        if (emailResult.success) {
+          console.log(`📧 Email notification sent for booking ${booking.bookingId} status change to ${status}`);
+        } else {
+          console.log(`⚠️ Failed to send email notification: ${emailResult.error}`);
+        }
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
 
     res.status(200).json({
       success: true,
@@ -462,6 +495,7 @@ router.put('/:id/service-status', auth, [
     }
 
     // Update service status
+    const oldServiceStatus = booking.serviceStatus;
     booking.serviceStatus = serviceStatus;
     
     // Add to status history
@@ -482,6 +516,25 @@ router.put('/:id/service-status', auth, [
     }
 
     await booking.save();
+
+    // Send email notification if service status changed
+    if (oldServiceStatus !== serviceStatus) {
+      try {
+        // Populate booking with customer details for email
+        await booking.populate('customer', 'firstName lastName email');
+        await booking.populate('services.service', 'name');
+        
+        const emailResult = await emailService.sendServiceStatusNotification(booking, serviceStatus);
+        if (emailResult.success) {
+          console.log(`📧 Service status email sent for booking ${booking.bookingId} status change to ${serviceStatus}`);
+        } else {
+          console.log(`⚠️ Failed to send service status email: ${emailResult.error}`);
+        }
+      } catch (emailError) {
+        console.error('Error sending service status email:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
 
     res.status(200).json({
       success: true,

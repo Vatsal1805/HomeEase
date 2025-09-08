@@ -16,7 +16,13 @@ const Profile = () => {
     name: '',
     email: '',
     phone: '',
-    address: '',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      pincode: '',
+      landmark: ''
+    },
     // Provider business details
     providerDetails: {
       companyName: '',
@@ -54,7 +60,13 @@ const Profile = () => {
           name: userData.name || `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
           email: userData.email || '',
           phone: userData.phone || '',
-          address: userData.address || '',
+          address: {
+            street: userData.address?.street || '',
+            city: userData.address?.city || '',
+            state: userData.address?.state || '',
+            pincode: userData.address?.pincode || '',
+            landmark: userData.address?.landmark || ''
+          },
           providerDetails: {
             companyName: userData.providerDetails?.companyName || '',
             businessName: userData.providerDetails?.businessName || '',
@@ -85,7 +97,13 @@ const Profile = () => {
             name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
             email: user.email || '',
             phone: user.phone || '',
-            address: user.address || '',
+            address: {
+              street: user.address?.street || '',
+              city: user.address?.city || '',
+              state: user.address?.state || '',
+              pincode: user.address?.pincode || '',
+              landmark: user.address?.landmark || ''
+            },
             providerDetails: {
               companyName: user.providerDetails?.companyName || '',
               businessName: user.providerDetails?.businessName || '',
@@ -461,18 +479,98 @@ const Profile = () => {
                 required
               />
             </div>
-            
+          </div>
+        </div>
+
+        {/* Address Information */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Address Information</h3>
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Address
+                Street Address
               </label>
               <input
                 type="text"
-                value={profileData.address}
-                onChange={(e) => setProfileData({...profileData, address: e.target.value})}
+                value={profileData.address.street}
+                onChange={(e) => setProfileData({
+                  ...profileData, 
+                  address: {...profileData.address, street: e.target.value}
+                })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Your address"
+                placeholder="Enter your street address"
               />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  City
+                </label>
+                <input
+                  type="text"
+                  value={profileData.address.city}
+                  onChange={(e) => setProfileData({
+                    ...profileData, 
+                    address: {...profileData.address, city: e.target.value}
+                  })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Enter your city"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  State
+                </label>
+                <input
+                  type="text"
+                  value={profileData.address.state}
+                  onChange={(e) => setProfileData({
+                    ...profileData, 
+                    address: {...profileData.address, state: e.target.value}
+                  })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Enter your state"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pincode *
+                </label>
+                <input
+                  type="text"
+                  value={profileData.address.pincode}
+                  onChange={(e) => setProfileData({
+                    ...profileData, 
+                    address: {...profileData.address, pincode: e.target.value}
+                  })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="6-digit pincode"
+                  maxLength={6}
+                  pattern="\d{6}"
+                />
+                <p className="text-xs text-gray-500 mt-1">Required for finding nearby services</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Landmark
+                </label>
+                <input
+                  type="text"
+                  value={profileData.address.landmark}
+                  onChange={(e) => setProfileData({
+                    ...profileData, 
+                    address: {...profileData.address, landmark: e.target.value}
+                  })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Nearby landmark"
+                />
+              </div>
             </div>
           </div>
         </div>

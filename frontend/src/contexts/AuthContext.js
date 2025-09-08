@@ -21,6 +21,9 @@ export const AuthProvider = ({ children }) => {
 
   // Set up axios defaults
   useEffect(() => {
+    // Configure axios base URL
+    axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    
     if (token) {
       // Validate token format before using it
       const tokenParts = token.split('.');

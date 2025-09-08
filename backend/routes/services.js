@@ -16,7 +16,9 @@ router.get('/', [
   query('sortBy').optional().isIn(['price', 'rating', 'name', 'createdAt']),
   query('sortOrder').optional().isIn(['asc', 'desc']),
   query('page').optional().isInt({ min: 1 }),
-  query('limit').optional().isInt({ min: 1, max: 50 })
+  query('limit').optional().isInt({ min: 1, max: 50 }),
+  query('pincode').optional().matches(/^\d{6}$/).withMessage('Pincode must be 6 digits'),
+  query('nearbyOnly').optional().isBoolean()
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -36,7 +38,9 @@ router.get('/', [
       sortBy = 'createdAt',
       sortOrder = 'desc',
       page = 1,
-      limit = 20
+      limit = 20,
+      pincode,
+      nearbyOnly
     } = req.query;
 
     // Build query
@@ -63,13 +67,43 @@ router.get('/', [
     // Execute query with pagination
     const skip = (page - 1) * limit;
     
-    const services = await Service.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(Number(limit))
-      .populate('provider', 'firstName lastName rating totalRatings');
+    let services;
+    let total;
 
-    const total = await Service.countDocuments(query);
+    if (pincode && nearbyOnly === 'true') {
+      // Filter services by providers in the same pincode
+      const User = require('../models/User');
+      
+      // Find providers with matching pincode in their business address
+      const nearbyProviders = await User.find({
+        userType: 'provider',
+        approvalStatus: 'approved',
+        $or: [
+          { 'providerDetails.businessAddress.pincode': pincode },
+          { 'address.pincode': pincode } // Fallback to personal address if business address not set
+        ]
+      }).select('_id');
+
+      const providerIds = nearbyProviders.map(provider => provider._id);
+      query.provider = { $in: providerIds };
+
+      services = await Service.find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(Number(limit))
+        .populate('provider', 'firstName lastName rating totalRatings providerDetails.businessAddress address');
+
+      total = await Service.countDocuments(query);
+    } else {
+      // Regular query without location filtering
+      services = await Service.find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(Number(limit))
+        .populate('provider', 'firstName lastName rating totalRatings providerDetails.businessAddress address');
+
+      total = await Service.countDocuments(query);
+    }
 
     res.status(200).json({
       success: true,
@@ -86,6 +120,82 @@ router.get('/', [
 
   } catch (error) {
     console.error('Get services error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
+
+// @route   GET /api/services/nearby-stats
+// @desc    Get nearby providers and services count by pincode
+// @access  Public
+router.get('/nearby-stats', [
+  query('pincode').isLength({ min: 6, max: 6 }).matches(/^\d{6}$/).withMessage('Pincode must be 6 digits')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid pincode',
+        errors: errors.array()
+      });
+    }
+
+    const { pincode } = req.query;
+    const User = require('../models/User');
+
+    // Find providers with matching pincode
+    const nearbyProviders = await User.find({
+      userType: 'provider',
+      approvalStatus: 'approved',
+      $or: [
+        { 'providerDetails.businessAddress.pincode': pincode },
+        { 'address.pincode': pincode }
+      ]
+    }).select('_id');
+
+    const providerIds = nearbyProviders.map(provider => provider._id);
+
+    // Count services from these providers
+    const nearbyServicesCount = await Service.countDocuments({
+      provider: { $in: providerIds },
+      isActive: true
+    });
+
+    // Get category breakdown
+    const categoryBreakdown = await Service.aggregate([
+      {
+        $match: {
+          provider: { $in: providerIds },
+          isActive: true
+        }
+      },
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        pincode,
+        providersCount: nearbyProviders.length,
+        servicesCount: nearbyServicesCount,
+        categoryBreakdown: categoryBreakdown.reduce((acc, item) => {
+          acc[item._id] = item.count;
+          return acc;
+        }, {})
+      }
+    });
+
+  } catch (error) {
+    console.error('Nearby stats error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error',

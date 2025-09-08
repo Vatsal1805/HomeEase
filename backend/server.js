@@ -18,7 +18,6 @@ const adminRoutes = require('./routes/admin');
 const providerRoutes = require('./routes/provider');
 const reviewRoutes = require('./routes/reviews');
 const analyticsRoutes = require('./routes/analytics');
-const debugRoutes = require('./routes/debug');
 const healthRoutes = require('./routes/health');
 
 // Import User model for admin creation
@@ -115,7 +114,6 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/provider', providerRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
-app.use('/api/debug', debugRoutes);
 app.use('/api/health', healthRoutes);
 
 // 404 handler
