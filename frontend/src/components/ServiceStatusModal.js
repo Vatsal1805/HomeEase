@@ -26,13 +26,13 @@ const ServiceStatusModal = ({ booking, isOpen, onClose, onUpdate }) => {
       );
 
       if (response.data.success) {
-        toast.success('Service status updated successfully');
+        toast.success('Service status updated successfully', { duration: 2000 });
         onUpdate(response.data.data.booking);
         onClose();
       }
     } catch (error) {
       console.error('Status update error:', error);
-      toast.error(error.response?.data?.message || 'Failed to update status');
+  toast.error(error.response?.data?.message || 'Failed to update status', { duration: 2000 });
     } finally {
       setLoading(false);
     }

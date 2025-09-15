@@ -13,7 +13,7 @@ const AuthSuccess = () => {
     const error = searchParams.get('error');
 
     if (error) {
-      toast.error('Authentication failed. Please try again.');
+      toast.error('Authentication failed. Please try again.', { duration: 2000 });
       navigate('/login');
       return;
     }
@@ -34,7 +34,7 @@ const AuthSuccess = () => {
         // Set auth context
         setAuth({ user, token });
         
-        toast.success('Login successful!');
+        toast.success('Login successful!', { duration: 2000 });
         
         // Redirect based on user type
         if (user.userType === 'admin') {
@@ -46,7 +46,7 @@ const AuthSuccess = () => {
         }
       } catch (error) {
         console.error('Error parsing token:', error);
-        toast.error('Authentication failed. Please try again.');
+        toast.error('Authentication failed. Please try again.', { duration: 2000 });
         navigate('/login');
       }
     } else {

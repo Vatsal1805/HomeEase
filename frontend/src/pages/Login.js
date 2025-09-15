@@ -33,7 +33,7 @@ const Login = () => {
     e.preventDefault();
     
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all fields');
+      toast.error('Please fill in all fields', { duration: 2000 });
       return;
     }
 
@@ -43,7 +43,7 @@ const Login = () => {
       const result = await login(formData);
       
       if (result.success) {
-        toast.success('Login successful!');
+        toast.success('Login successful!', { duration: 2000 });
         
         // Redirect based on user type
         if (result.user.userType === 'admin') {
@@ -66,7 +66,7 @@ const Login = () => {
             duration: 5000,
           });
         } else {
-          toast.error(result.message || 'Login failed');
+          toast.error(result.message || 'Login failed', { duration: 2000 });
         }
       }
       
@@ -84,7 +84,7 @@ const Login = () => {
           duration: 5000,
         });
       } else {
-        toast.error(errorMessage);
+        toast.error(errorMessage, { duration: 2000 });
       }
     } finally {
       setLoading(false);

@@ -11,12 +11,12 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
 
   const handleSubmitReview = async () => {
     if (rating === 0) {
-      toast.error('Please select a rating');
+  toast.error('Please select a rating', { duration: 2000 });
       return;
     }
 
     if (comment.trim().length < 10) {
-      toast.error('Please write at least 10 characters in your review');
+  toast.error('Please write at least 10 characters in your review', { duration: 2000 });
       return;
     }
 
@@ -25,14 +25,14 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
       
       // Validate booking data
       if (!booking || !booking.services || booking.services.length === 0) {
-        toast.error('Invalid booking data');
+    toast.error('Invalid booking data', { duration: 2000 });
         return;
       }
 
       // Get the first service from booking
       const serviceItem = booking.services[0];
       if (!serviceItem) {
-        toast.error('No service found in booking');
+    toast.error('No service found in booking', { duration: 2000 });
         return;
       }
 
@@ -43,7 +43,7 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
           ? serviceItem.service._id 
           : serviceItem.service;
       } else {
-        toast.error('Service information not available');
+    toast.error('Service information not available', { duration: 2000 });
         return;
       }
 
@@ -59,7 +59,7 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
           ? serviceItem.service.provider._id
           : serviceItem.service.provider;
       } else {
-        toast.error('Provider information not available');
+    toast.error('Provider information not available', { duration: 2000 });
         return;
       }
 
@@ -83,7 +83,7 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
       );
 
       if (response.data.success) {
-        toast.success('Review submitted successfully');
+  toast.success('Review submitted successfully', { duration: 2000 });
         onReviewSubmitted(response.data.review);
         onClose();
         // Reset form
@@ -92,7 +92,7 @@ const ReviewModal = ({ booking, isOpen, onClose, onReviewSubmitted }) => {
       }
     } catch (error) {
       console.error('Review submission error:', error);
-      toast.error(error.response?.data?.message || 'Failed to submit review');
+  toast.error(error.response?.data?.message || 'Failed to submit review', { duration: 2000 });
     } finally {
       setLoading(false);
     }

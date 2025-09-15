@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     // Redirect if not admin
     if (user && user.userType !== 'admin') {
-      toast.error('Access denied. Admin privileges required.');
+      toast.error('Access denied. Admin privileges required.', { duration: 2000 });
       navigate('/');
       return;
     }
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to fetch dashboard data');
+      toast.error('Failed to fetch dashboard data', { duration: 2000 });
       setLoading(false);
     }
   };

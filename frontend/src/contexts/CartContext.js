@@ -38,11 +38,11 @@ export const CartProvider = ({ children }) => {
       const existingItem = prevItems.find(item => item._id === service._id);
       
       if (existingItem) {
-        toast.error('Item already in cart!');
+        toast.error('Item already in cart!', { duration: 2000 });
         return prevItems;
       }
 
-      toast.success(`${service.name} added to cart!`);
+      toast.success(`${service.name} added to cart!`, { duration: 2000 });
       return [...prevItems, { ...service, quantity: 1 }];
     });
   };
@@ -50,7 +50,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = (serviceId) => {
     setCartItems(prevItems => {
       const updatedItems = prevItems.filter(item => item._id !== serviceId);
-      toast.success('Item removed from cart');
+      toast.success('Item removed from cart', { duration: 2000 });
       return updatedItems;
     });
   };

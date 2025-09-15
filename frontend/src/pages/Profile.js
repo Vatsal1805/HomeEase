@@ -147,10 +147,10 @@ const Profile = () => {
     } catch (error) {
       console.error('Error fetching user data:', error);
       if (error.response?.status === 401) {
-        toast.error('Please login again');
+        toast.error('Please login again', { duration: 2000 });
         navigate('/login');
       } else {
-        toast.error('Failed to load profile data');
+        toast.error('Failed to load profile data', { duration: 2000 });
       }
     } finally {
       setLoading(false);
@@ -190,19 +190,19 @@ const Profile = () => {
       if (response.data.success) {
         // Update the user context with new data
         updateUser(response.data.data);
-        toast.success('Profile updated successfully!');
+        toast.success('Profile updated successfully!', { duration: 2000 });
       }
     } catch (error) {
       console.error('Profile update error:', error);
       
       if (error.response?.data?.errors) {
         error.response.data.errors.forEach(err => {
-          toast.error(err.msg);
+          toast.error(err.msg, { duration: 2000 });
         });
       } else if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.message, { duration: 2000 });
       } else {
-        toast.error('Failed to update profile');
+        toast.error('Failed to update profile', { duration: 2000 });
       }
     } finally {
       setUpdating(false);
@@ -239,43 +239,43 @@ const Profile = () => {
   };
 
   const renderOverview = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-card p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl shadow-sm p-4">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-              <i className="fas fa-calendar-check text-primary-600"></i>
+            <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+              <i className="fas fa-calendar-check text-primary-600 text-sm"></i>
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">Total Bookings</p>
-              <p className="text-2xl font-bold text-gray-900">{Array.isArray(bookings) ? bookings.length : 0}</p>
+            <div className="ml-3">
+              <p className="text-xs text-gray-600">Total Bookings</p>
+              <p className="text-xl font-bold text-gray-900">{Array.isArray(bookings) ? bookings.length : 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-card p-6">
+        <div className="bg-white rounded-xl shadow-sm p-4">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <i className="fas fa-check-circle text-green-600"></i>
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <i className="fas fa-check-circle text-green-600 text-sm"></i>
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="ml-3">
+              <p className="text-xs text-gray-600">Completed</p>
+              <p className="text-xl font-bold text-gray-900">
                 {Array.isArray(bookings) ? bookings.filter(b => b.status === 'completed').length : 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-card p-6">
+        <div className="bg-white rounded-xl shadow-sm p-4">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <i className="fas fa-clock text-yellow-600"></i>
+            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <i className="fas fa-clock text-yellow-600 text-sm"></i>
             </div>
-            <div className="ml-4">
-              <p className="text-sm text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="ml-3">
+              <p className="text-xs text-gray-600">Pending</p>
+              <p className="text-xl font-bold text-gray-900">
                 {Array.isArray(bookings) ? bookings.filter(b => b.status === 'pending').length : 0}
               </p>
             </div>
@@ -284,14 +284,14 @@ const Profile = () => {
 
         {/* Provider-specific stats */}
         {user?.userType === 'provider' && user?.providerDetails && (
-          <div className="bg-white rounded-2xl shadow-card p-6">
+          <div className="bg-white rounded-xl shadow-sm p-4">
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <i className="fas fa-rupee-sign text-emerald-600"></i>
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <i className="fas fa-rupee-sign text-emerald-600 text-sm"></i>
               </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Total Earnings</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="ml-3">
+                <p className="text-xs text-gray-600">Total Earnings</p>
+                <p className="text-xl font-bold text-gray-900">
                   ₹{user.providerDetails.totalEarnings?.toLocaleString() || '0'}
                 </p>
               </div>
@@ -301,35 +301,35 @@ const Profile = () => {
       </div>
 
       {/* Recent Bookings */}
-      <div className="bg-white rounded-2xl shadow-card p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Bookings</h2>
+      <div className="bg-white rounded-xl shadow-sm p-5">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Bookings</h2>
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary-500"></div>
+          <div className="flex items-center justify-center py-6">
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-500"></div>
           </div>
         ) : !Array.isArray(bookings) || bookings.length === 0 ? (
-          <div className="text-center py-8">
-            <i className="fas fa-calendar-times text-4xl text-gray-300 mb-3"></i>
-            <p className="text-gray-500">No bookings yet</p>
+          <div className="text-center py-6">
+            <i className="fas fa-calendar-times text-3xl text-gray-300 mb-2"></i>
+            <p className="text-sm text-gray-500">No bookings yet</p>
           </div>
         ) : (
           bookings.slice(0, 3).map((booking) => (
-            <div key={booking._id} className="flex items-center justify-between py-4 border-b border-gray-100 last:border-b-0">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-tools text-primary-600"></i>
+            <div key={booking._id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-tools text-primary-600 text-xs"></i>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-gray-900">
                     {booking.services?.[0]?.service?.name || `Booking #${booking.bookingId}`}
                     {booking.services?.length > 1 && ` +${booking.services.length - 1} more`}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs text-gray-600">
                     {new Date(booking.scheduledDate).toLocaleDateString()}
                   </p>
                 </div>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
                 {booking.status}
               </span>
             </div>
@@ -340,64 +340,64 @@ const Profile = () => {
   );
 
   const renderBookings = () => (
-    <div className="bg-white rounded-2xl shadow-card p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">My Bookings</h2>
+    <div className="bg-white rounded-xl shadow-sm p-5">
+      <h2 className="text-lg font-bold text-gray-900 mb-4">My Bookings</h2>
       
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary-500"></div>
         </div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-12">
-          <i className="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
-          <h3 className="text-lg font-semibold text-gray-600 mb-2">No bookings yet</h3>
+        <div className="text-center py-8">
+          <i className="fas fa-calendar-times text-4xl text-gray-300 mb-3"></i>
+          <h3 className="text-base font-semibold text-gray-600 mb-2">No bookings yet</h3>
           <p className="text-gray-500 mb-4">Start by booking your first service!</p>
           <button
             onClick={() => navigate('/services')}
-            className="bg-primary-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary-600 transition-colors duration-300"
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-600 transition-colors duration-300"
           >
             Browse Services
           </button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {bookings.map((booking) => (
-            <div key={booking._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-300">
+            <div key={booking._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-300">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-base font-semibold text-gray-900 mb-2">
                     {booking.serviceId?.name || 'Service'}
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
                     <div className="flex items-center">
-                      <i className="fas fa-calendar mr-2 text-primary-500"></i>
+                      <i className="fas fa-calendar mr-2 text-primary-500 text-xs"></i>
                       {new Date(booking.scheduledDate).toLocaleDateString('en-US', {
-                        weekday: 'long',
+                        weekday: 'short',
                         year: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         day: 'numeric'
                       })}
                     </div>
                     <div className="flex items-center">
-                      <i className="fas fa-clock mr-2 text-primary-500"></i>
+                      <i className="fas fa-clock mr-2 text-primary-500 text-xs"></i>
                       {booking.scheduledTime || 'Time not specified'}
                     </div>
                     <div className="flex items-center">
-                      <i className="fas fa-map-marker-alt mr-2 text-primary-500"></i>
+                      <i className="fas fa-map-marker-alt mr-2 text-primary-500 text-xs"></i>
                       {booking.address && typeof booking.address === 'object' 
                         ? `${booking.address.street || ''}, ${booking.address.city || ''}, ${booking.address.state || ''} ${booking.address.pincode || ''}`.replace(/,\s*,/g, ',').replace(/^\s*,\s*/, '').replace(/,\s*$/, '')
                         : booking.address || 'Address not specified'
                       }
                     </div>
                     <div className="flex items-center">
-                      <i className="fas fa-rupee-sign mr-2 text-primary-500"></i>
+                      <i className="fas fa-rupee-sign mr-2 text-primary-500 text-xs"></i>
                       ₹{booking.totalAmount}
                     </div>
                   </div>
                   {booking.notes && (
-                    <div className="mt-3">
+                    <div className="mt-2">
                       <p className="text-sm text-gray-600">
-                        <i className="fas fa-sticky-note mr-2"></i>
+                        <i className="fas fa-sticky-note mr-2 text-xs"></i>
                         {booking.notes}
                       </p>
                     </div>
@@ -405,19 +405,19 @@ const Profile = () => {
                   {booking.providerNotes && (
                     <div className="mt-2">
                       <p className="text-sm text-blue-600">
-                        <i className="fas fa-user-tie mr-2"></i>
+                        <i className="fas fa-user-tie mr-2 text-xs"></i>
                         Provider Notes: {booking.providerNotes}
                       </p>
                     </div>
                   )}
                 </div>
-                <div className="ml-6 text-right">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                <div className="ml-4 text-right">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
                     {booking.status}
                   </span>
                   {booking.status === 'completed' && (
                     <div className="mt-2">
-                      <button className="text-sm text-primary-600 hover:text-primary-700">
+                      <button className="text-xs text-primary-600 hover:text-primary-700">
                         Rate Service
                       </button>
                     </div>
@@ -432,49 +432,49 @@ const Profile = () => {
   );
 
   const renderProfileSettings = () => (
-    <div className="bg-white rounded-2xl shadow-card p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+    <div className="bg-white rounded-xl shadow-sm p-5">
+      <h2 className="text-lg font-bold text-gray-900 mb-4">Profile Settings</h2>
       
-      <form onSubmit={handleProfileUpdate} className="space-y-8">
+      <form onSubmit={handleProfileUpdate} className="space-y-6">
         {/* Basic Information */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="text-base font-semibold text-gray-900 mb-3">Basic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name *
               </label>
               <input
                 type="text"
                 value={profileData.name}
                 onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address *
               </label>
               <input
                 type="email"
                 value={profileData.email}
                 onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 required
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number *
               </label>
               <input
                 type="tel"
                 value={profileData.phone}
                 onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 placeholder="10-digit mobile number"
                 required
               />
@@ -484,10 +484,10 @@ const Profile = () => {
 
         {/* Address Information */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Address Information</h3>
-          <div className="space-y-4">
+          <h3 className="text-base font-semibold text-gray-900 mb-3">Address Information</h3>
+          <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Street Address
               </label>
               <input
@@ -497,14 +497,14 @@ const Profile = () => {
                   ...profileData, 
                   address: {...profileData.address, street: e.target.value}
                 })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 placeholder="Enter your street address"
               />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   City
                 </label>
                 <input
@@ -514,13 +514,13 @@ const Profile = () => {
                     ...profileData, 
                     address: {...profileData.address, city: e.target.value}
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                   placeholder="Enter your city"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   State
                 </label>
                 <input
@@ -530,15 +530,15 @@ const Profile = () => {
                     ...profileData, 
                     address: {...profileData.address, state: e.target.value}
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                   placeholder="Enter your state"
                 />
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Pincode *
                 </label>
                 <input
@@ -548,7 +548,7 @@ const Profile = () => {
                     ...profileData, 
                     address: {...profileData.address, pincode: e.target.value}
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                   placeholder="6-digit pincode"
                   maxLength={6}
                   pattern="\d{6}"
@@ -557,7 +557,7 @@ const Profile = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Landmark
                 </label>
                 <input
@@ -567,7 +567,7 @@ const Profile = () => {
                     ...profileData, 
                     address: {...profileData.address, landmark: e.target.value}
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                   placeholder="Nearby landmark"
                 />
               </div>
@@ -906,7 +906,7 @@ const Profile = () => {
           <button
             type="submit"
             disabled={updating}
-            className="bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300"
           >
             {updating ? 'Updating...' : 'Update Profile'}
           </button>
@@ -925,7 +925,7 @@ const Profile = () => {
     localStorage.removeItem('homeease_token');
     delete axios.defaults.headers.common['Authorization'];
     navigate('/login');
-    toast.success('Logged out successfully');
+    toast.success('Logged out successfully', { duration: 2000 });
   };
 
   if (!user) {
@@ -957,33 +957,33 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 pt-20 pb-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
           <motion.div
             className="lg:col-span-1"
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="bg-white rounded-2xl shadow-card p-6 sticky top-24">
+            <div className="bg-white rounded-xl shadow-sm p-4">
               {/* User Info */}
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i className="fas fa-user text-2xl text-white"></i>
+              <div className="text-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i className="fas fa-user text-xl text-white"></i>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-                <p className="text-gray-600">{user.email}</p>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mt-2 ${
+                <h3 className="text-base font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-sm text-gray-600">{user.email}</p>
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${
                   user.userType === 'provider' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
                 }`}>
                   {user.userType === 'provider' ? 'Service Provider' : 'Customer'}
@@ -991,28 +991,28 @@ const Profile = () => {
               </div>
 
               {/* Navigation */}
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center px-4 py-3 text-left rounded-lg transition-all duration-300 ${
+                    className={`w-full flex items-center px-3 py-2 text-left rounded-lg transition-all duration-200 ${
                       activeTab === tab.id
                         ? 'bg-primary-500 text-white'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <i className={`${tab.icon} mr-3`}></i>
-                    {tab.name}
+                    <i className={`${tab.icon} mr-2 text-sm`}></i>
+                    <span className="text-sm">{tab.name}</span>
                   </button>
                 ))}
                 
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center px-4 py-3 text-left rounded-lg text-red-600 hover:bg-red-50 transition-all duration-300"
+                  className="w-full flex items-center px-3 py-2 text-left rounded-lg text-red-600 hover:bg-red-50 transition-all duration-200"
                 >
-                  <i className="fas fa-sign-out-alt mr-3"></i>
-                  Logout
+                  <i className="fas fa-sign-out-alt mr-2 text-sm"></i>
+                  <span className="text-sm">Logout</span>
                 </button>
               </nav>
             </div>
@@ -1021,9 +1021,9 @@ const Profile = () => {
           {/* Main Content */}
           <motion.div
             className="lg:col-span-3"
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
             {getTabContent()}
           </motion.div>

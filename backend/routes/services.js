@@ -343,7 +343,12 @@ router.post('/', auth, [
     .withMessage('Price must be a positive number'),
   body('duration')
     .isInt({ min: 15 })
-    .withMessage('Duration must be at least 15 minutes')
+    .withMessage('Duration must be at least 15 minutes'),
+  body('image')
+    .notEmpty()
+    .withMessage('Service image is required')
+    .isURL()
+    .withMessage('Service image must be a valid URL')
 ], async (req, res) => {
   try {
     // Check if user is a provider
@@ -411,7 +416,17 @@ router.put('/:id', auth, [
   body('duration')
     .optional()
     .isInt({ min: 15 })
-    .withMessage('Duration must be at least 15 minutes')
+    .withMessage('Duration must be at least 15 minutes'),
+  body('image')
+    .optional()
+    .isURL()
+    .withMessage('Service image must be a valid URL')
+    .custom((value) => {
+      if (value !== undefined && value.trim() === '') {
+        throw new Error('Service image cannot be empty');
+      }
+      return true;
+    })
 ], async (req, res) => {
   try {
     // Check if user is a provider

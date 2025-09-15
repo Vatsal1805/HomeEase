@@ -36,7 +36,7 @@ const ProviderDashboard = () => {
     }
 
     if (user.userType !== 'provider') {
-      toast.error('Access denied. Provider account required.');
+      toast.error('Access denied. Provider account required.', { duration: 2000 });
       navigate('/');
       return;
     }
@@ -68,7 +68,7 @@ const ProviderDashboard = () => {
       }
       
     } catch (error) {
-      toast.error('Failed to load dashboard data');
+      toast.error('Failed to load dashboard data', { duration: 2000 });
       
       if (stats.totalBookings === 0) {
         setStats({
@@ -92,13 +92,13 @@ const ProviderDashboard = () => {
       });
 
       if (response.data.success) {
-        toast.success(`Booking ${action === 'approve' ? 'approved' : 'declined'} successfully`);
+        toast.success(`Booking ${action === 'approve' ? 'approved' : 'declined'} successfully`, { duration: 2000 });
         // Refresh dashboard data
         fetchDashboardData();
       }
     } catch (error) {
       console.error(`Error ${action}ing booking:`, error);
-      toast.error(`Failed to ${action} booking`);
+      toast.error(`Failed to ${action} booking`, { duration: 2000 });
     }
   };
 

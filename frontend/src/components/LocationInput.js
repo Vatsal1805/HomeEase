@@ -40,7 +40,7 @@ const LocationInput = ({
       }
     } catch (error) {
       console.error('Error fetching stats:', error);
-      toast.error('Unable to fetch location data');
+  toast.error('Unable to fetch location data', { duration: 2000 });
     } finally {
       setLoading(false);
     }

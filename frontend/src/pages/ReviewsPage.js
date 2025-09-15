@@ -34,7 +34,7 @@ const ReviewsPage = () => {
       }
     } catch (error) {
       console.error('Reviews fetch error:', error);
-      toast.error('Failed to load reviews');
+      toast.error('Failed to load reviews', { duration: 2000 });
     } finally {
       setLoading(false);
     }

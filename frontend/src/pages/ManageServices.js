@@ -112,6 +112,40 @@ const ManageServices = () => {
       navigate('/profile');
       return;
     }
+
+    // Validate required fields
+    if (!formData.name.trim()) {
+      toast.error('Service name is required');
+      return;
+    }
+    if (!formData.description.trim()) {
+      toast.error('Service description is required');
+      return;
+    }
+    if (!formData.category) {
+      toast.error('Service category is required');
+      return;
+    }
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      toast.error('Valid service price is required');
+      return;
+    }
+    if (!formData.duration || parseInt(formData.duration) < 15) {
+      toast.error('Service duration must be at least 15 minutes');
+      return;
+    }
+    if (!formData.image.trim()) {
+      toast.error('Service image is required');
+      return;
+    }
+    
+    // Validate image URL format
+    try {
+      new URL(formData.image);
+    } catch {
+      toast.error('Please enter a valid image URL');
+      return;
+    }
     
     try {
       const serviceData = {
@@ -304,7 +338,7 @@ const ManageServices = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URL
+                  Image URL *
                 </label>
                 <input
                   type="url"
@@ -312,8 +346,12 @@ const ManageServices = () => {
                   value={formData.image}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://example.com/service-image.jpg"
+                  required
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  Provide a URL to an image that represents your service
+                </p>
               </div>
 
               <div>

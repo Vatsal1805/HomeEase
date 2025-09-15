@@ -32,10 +32,10 @@ const UserBookings = () => {
     } catch (error) {
       console.error('Error fetching bookings:', error);
       if (error.response?.status === 401) {
-        toast.error('Please login again');
+        toast.error('Please login again', { duration: 2000 });
         navigate('/login');
       } else {
-        toast.error('Failed to load bookings');
+        toast.error('Failed to load bookings', { duration: 2000 });
       }
     } finally {
       setLoading(false);
@@ -334,7 +334,7 @@ const UserBookings = () => {
             setSelectedBooking(null);
           }}
           onReviewSubmitted={(review) => {
-            toast.success('Review submitted successfully!');
+            toast.success('Review submitted successfully!', { duration: 2000 });
             // You could update the booking to show it's been reviewed
             fetchBookings();
           }}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -68,26 +69,49 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.message) {
-      toast.error('Please fill in all required fields');
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error('Please fill in all required fields', { duration: 2000 });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address', { duration: 2000 });
+      return;
+    }
+
+    // Phone validation (if provided)
+    if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone)) {
+      toast.error('Please enter a valid Indian mobile number', { duration: 2000 });
       return;
     }
 
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Message sent successfully! We\'ll get back to you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+      const response = await axios.post('/api/contact', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message
       });
+
+      if (response.data.success) {
+        toast.success('Message sent successfully! We\'ll get back to you soon.', { duration: 3000 });
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+      }
     } catch (error) {
-      toast.error('Failed to send message. Please try again.');
+      console.error('Contact form error:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to send message. Please try again.';
+      toast.error(errorMessage, { duration: 3000 });
     } finally {
       setLoading(false);
     }

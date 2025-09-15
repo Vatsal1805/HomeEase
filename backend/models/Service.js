@@ -29,7 +29,14 @@ const serviceSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: ''
+    required: [true, 'Service image is required'],
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return v && v.length > 0;
+      },
+      message: 'Service image URL cannot be empty'
+    }
   },
   isActive: {
     type: Boolean,

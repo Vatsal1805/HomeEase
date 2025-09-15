@@ -22,7 +22,7 @@ const AdminReviews = () => {
   useEffect(() => {
     // Redirect if not admin
     if (user && user.userType !== 'admin') {
-      toast.error('Access denied. Admin privileges required.');
+      toast.error('Access denied. Admin privileges required.', { duration: 2000 });
       navigate('/');
       return;
     }
@@ -42,7 +42,7 @@ const AdminReviews = () => {
       setPagination(response.data.data.pagination);
     } catch (error) {
       console.error('Error fetching reviews:', error);
-      toast.error('Failed to fetch reviews');
+      toast.error('Failed to fetch reviews', { duration: 2000 });
     } finally {
       setLoading(false);
     }
@@ -56,11 +56,11 @@ const AdminReviews = () => {
     try {
       setDeleteLoading(reviewId);
       await axios.delete(`/api/admin/review/${reviewId}`);
-      toast.success('Review deleted successfully');
+      toast.success('Review deleted successfully', { duration: 2000 });
       fetchReviews(); // Refresh list
     } catch (error) {
       console.error('Error deleting review:', error);
-      toast.error('Failed to delete review');
+      toast.error('Failed to delete review', { duration: 2000 });
     } finally {
       setDeleteLoading(null);
     }

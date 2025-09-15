@@ -3,12 +3,17 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
 
-// Google OAuth Strategy
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "/api/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
+// Google OAuth Strategy - only configure if credentials are available
+if (process.env.GOOGLE_CLIENT_ID && 
+    process.env.GOOGLE_CLIENT_SECRET && 
+    process.env.GOOGLE_CLIENT_ID !== 'your_google_client_id') {
+  
+  console.log('🔑 Configuring Google OAuth Strategy...');
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
   try {
     // Check if user already exists with this Google ID
     let user = await User.findOne({ 
@@ -49,8 +54,17 @@ passport.use(new GoogleStrategy({
   }
 }));
 
-// Facebook OAuth Strategy
-passport.use(new FacebookStrategy({
+} else {
+  console.log('⚠️  Google OAuth credentials not configured - skipping Google authentication');
+}
+
+// Facebook OAuth Strategy - only configure if credentials are available
+if (process.env.FACEBOOK_APP_ID && 
+    process.env.FACEBOOK_APP_SECRET && 
+    process.env.FACEBOOK_APP_ID !== 'your_facebook_app_id') {
+  
+  console.log('🔑 Configuring Facebook OAuth Strategy...');
+  passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
   callbackURL: "/api/auth/facebook/callback",
@@ -95,6 +109,10 @@ passport.use(new FacebookStrategy({
     done(error, null);
   }
 }));
+
+} else {
+  console.log('⚠️  Facebook OAuth credentials not configured - skipping Facebook authentication');
+}
 
 // Serialize user for session
 passport.serializeUser((user, done) => {

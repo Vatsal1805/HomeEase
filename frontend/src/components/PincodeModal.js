@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'; // If you use toast in this file, set duration: 2000 for all popups
 
 const PincodeModal = ({ isOpen, onClose, onPincodeSubmit }) => {
   const [pincode, setPincode] = useState('');

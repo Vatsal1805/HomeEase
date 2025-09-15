@@ -27,7 +27,7 @@ const AnalyticsModal = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error('Analytics fetch error:', error);
-      toast.error('Failed to load analytics data');
+  toast.error('Failed to load analytics data', { duration: 2000 });
     } finally {
       setLoading(false);
     }

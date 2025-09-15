@@ -49,7 +49,7 @@ const Services = () => {
       const response = await axios.get(`/api/services?${params.toString()}`);
       setServices(response.data.data.services);
     } catch (error) {
-      toast.error('Failed to load services');
+      toast.error('Failed to load services', { duration: 2000 });
       console.error('Error fetching services:', error);
     } finally {
       setLoading(false);
@@ -65,7 +65,7 @@ const Services = () => {
         stats: response.data.data
       }));
     } catch (error) {
-      toast.error('Failed to load nearby statistics');
+      toast.error('Failed to load nearby statistics', { duration: 2000 });
       console.error('Error fetching stats:', error);
     } finally {
       setLoadingStats(false);
@@ -147,7 +147,7 @@ const Services = () => {
 
   const handleAddToCart = (service) => {
     if (!isAuthenticated) {
-      toast.error('Please login to add services to cart');
+      toast.error('Please login to add services to cart', { duration: 2000 });
       navigate('/login?redirect=/services');
       return;
     }

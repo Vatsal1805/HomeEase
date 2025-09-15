@@ -48,59 +48,59 @@ const Register = () => {
 
     const validateForm = () => {
     if (!formData.firstName.trim()) {
-      toast.error('First name is required');
+      toast.error('First name is required', { duration: 2000 });
       return false;
     }
     if (!formData.lastName.trim()) {
-      toast.error('Last name is required');
+      toast.error('Last name is required', { duration: 2000 });
       return false;
     }
     if (!formData.email.trim()) {
-      toast.error('Email is required');
+      toast.error('Email is required', { duration: 2000 });
       return false;
     }
     if (!formData.phone.trim()) {
-      toast.error('Phone number is required');
+      toast.error('Phone number is required', { duration: 2000 });
       return false;
     }
     // Validate Indian mobile number format
     if (!/^[6-9]\d{9}$/.test(formData.phone)) {
-      toast.error('Please enter a valid Indian mobile number (10 digits starting with 6-9)');
+      toast.error('Please enter a valid Indian mobile number (10 digits starting with 6-9)', { duration: 2000 });
       return false;
     }
     if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error('Password must be at least 6 characters', { duration: 2000 });
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('Passwords do not match', { duration: 2000 });
       return false;
     }
     
     // Validate provider details if userType is provider
     if (formData.userType === 'provider') {
       if (!formData.providerDetails.businessName.trim()) {
-        toast.error('Business name is required for providers');
+        toast.error('Business name is required for providers', { duration: 2000 });
         return false;
       }
       if (!formData.providerDetails.companyName.trim()) {
-        toast.error('Company name is required for providers');
+        toast.error('Company name is required for providers', { duration: 2000 });
         return false;
       }
       if (!formData.providerDetails.gstNumber.trim()) {
-        toast.error('GST number is required for providers');
+        toast.error('GST number is required for providers', { duration: 2000 });
         return false;
       }
       if (!formData.providerDetails.panNumber.trim()) {
-        toast.error('PAN number is required for providers');
+        toast.error('PAN number is required for providers', { duration: 2000 });
         return false;
       }
       if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.providerDetails.panNumber)) {
-        toast.error('Please enter a valid PAN number (e.g., ABCDE1234F)');
+        toast.error('Please enter a valid PAN number (e.g., ABCDE1234F)', { duration: 2000 });
         return false;
       }
       if (!formData.providerDetails.businessType.trim()) {
-        toast.error('Business type is required for providers');
+        toast.error('Business type is required for providers', { duration: 2000 });
         return false;
       }
     }
@@ -141,16 +141,16 @@ const Register = () => {
           });
           navigate('/login?message=provider-pending');
         } else {
-          toast.success('Registration successful! Welcome to HomeEase!');
+          toast.success('Registration successful! Welcome to HomeEase!', { duration: 2000 });
           navigate('/');
         }
       } else {
-        toast.error(result.message || 'Registration failed');
+        toast.error(result.message || 'Registration failed', { duration: 2000 });
       }
       
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.response?.data?.message || 'Registration failed');
+      toast.error(error.response?.data?.message || 'Registration failed', { duration: 2000 });
     } finally {
       setLoading(false);
     }
