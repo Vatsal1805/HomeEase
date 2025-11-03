@@ -19,7 +19,7 @@ const providerRoutes = require('./routes/provider');
 const reviewRoutes = require('./routes/reviews');
 const analyticsRoutes = require('./routes/analytics');
 const healthRoutes = require('./routes/health');
-const contactRoutes = require('./routes/contact');
+// const contactRoutes = require('./routes/contact');  // Temporarily disabled
 
 // Import User model for admin creation
 const User = require('./models/User');
@@ -116,7 +116,7 @@ app.use('/api/provider', providerRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/health', healthRoutes);
-app.use('/api/contact', contactRoutes);
+// app.use('/api/contact', contactRoutes);  // Temporarily disabled
 
 // 404 handler
 app.use('*', (req, res) => {
