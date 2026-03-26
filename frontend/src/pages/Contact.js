@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
+  // Initialize EmailJS on component mount
+  useEffect(() => {
+    emailjs.init(process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY_HERE');
+  }, []);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -90,6 +95,39 @@ const Contact = () => {
     setLoading(true);
 
     try {
+      // Step 1: Send Confirmation Email to User using EmailJS
+      const confirmationEmailParams = {
+        to_email: formData.email,
+        to_name: formData.name,
+        subject: formData.subject,
+        message: formData.message,
+        reply_to: process.env.REACT_APP_ADMIN_EMAIL || 'support@homeease.com'
+      };
+
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
+        process.env.REACT_APP_EMAILJS_CONFIRMATION_TEMPLATE_ID || 'YOUR_TEMPLATE_ID',
+        confirmationEmailParams
+      );
+      toast.success('Confirmation email sent to you!', { duration: 2000 });
+
+      // Step 2: Send Admin Notification Email using EmailJS
+      const adminEmailParams = {
+        to_email: process.env.REACT_APP_ADMIN_EMAIL || 'admin@homeease.com',
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone || 'Not provided',
+        subject: formData.subject,
+        message: formData.message
+      };
+
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
+        process.env.REACT_APP_EMAILJS_ADMIN_TEMPLATE_ID || 'YOUR_ADMIN_TEMPLATE_ID',
+        adminEmailParams
+      );
+
+      // Step 3: Save to MongoDB via Backend API
       const response = await axios.post('/api/contact', {
         name: formData.name,
         email: formData.email,
@@ -99,7 +137,7 @@ const Contact = () => {
       });
 
       if (response.data.success) {
-        toast.success('Message sent successfully! We\'ll get back to you soon.', { duration: 3000 });
+        toast.success('Message saved successfully! We\'ll get back to you soon.', { duration: 3000 });
         setFormData({
           name: '',
           email: '',
@@ -109,9 +147,48 @@ const Contact = () => {
         });
       }
     } catch (error) {
-      console.error('Contact form error:', error);
-      const errorMessage = error.response?.data?.message || 'Failed to send message. Please try again.';
-      toast.error(errorMessage, { duration: 3000 });
+      console.error('EmailJS Error Details:', {
+        status: error.status,
+        text: error.text,
+        message: error.message,
+        fullError: error
+      });
+
+      // Log environment variables for debugging (non-sensitive parts)
+      console.log('EmailJS Config:', {
+        hasPublicKey: !!process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
+        hasServiceId: !!process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        hasConfirmationTemplate: !!process.env.REACT_APP_EMAILJS_CONFIRMATION_TEMPLATE_ID,
+        hasAdminTemplate: !!process.env.REACT_APP_EMAILJS_ADMIN_TEMPLATE_ID,
+        adminEmail: process.env.REACT_APP_ADMIN_EMAIL
+      });
+      
+      // Still try to save to database even if email fails
+      try {
+        await axios.post('/api/contact', {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message
+        });
+        
+        const emailFailureMsg = error.text 
+          ? `Message saved (Email issue: ${error.text})` 
+          : 'Message saved! We\'ll contact you shortly.';
+        
+        toast.success(emailFailureMsg, { duration: 3000 });
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+      } catch (dbError) {
+        const errorMessage = error.response?.data?.message || error.text || 'Failed to send message. Please try again.';
+        toast.error(errorMessage, { duration: 3000 });
+      }
     } finally {
       setLoading(false);
     }

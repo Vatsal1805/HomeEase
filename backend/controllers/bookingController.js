@@ -66,7 +66,7 @@ const createBooking = async (req, res) => {
     }
 
     const total = subtotal - discount;
-
+    
     // Generate booking ID
     const bookingCount = await Booking.countDocuments();
     const bookingId = `HE${String(bookingCount + 1).padStart(6, '0')}`;
