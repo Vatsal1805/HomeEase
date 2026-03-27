@@ -39,10 +39,19 @@ const Register = () => {
         }
       });
     } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
+      // For phone field, only allow numeric input and limit to 10 digits
+      if (name === 'phone') {
+        const numericValue = value.replace(/\D/g, '').slice(0, 10);
+        setFormData({
+          ...formData,
+          [name]: numericValue
+        });
+      } else {
+        setFormData({
+          ...formData,
+          [name]: value
+        });
+      }
     }
   };
 
@@ -260,6 +269,7 @@ const Register = () => {
                   type="tel"
                   autoComplete="tel"
                   required
+                  maxLength="10"
                   value={formData.phone}
                   onChange={handleInputChange}
                   className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
