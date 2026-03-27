@@ -10,10 +10,15 @@ const createBooking = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.error('Booking validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array().map(err => ({
+          field: err.param,
+          message: err.msg,
+          value: err.value
+        }))
       });
     }
 
@@ -29,15 +34,23 @@ const createBooking = async (req, res) => {
 
     // Validate services exist and are active
     const serviceIds = services.map(s => s.serviceId);
+    console.log('Looking for services with IDs:', serviceIds);
+    
     const foundServices = await Service.find({
       _id: { $in: serviceIds },
       isActive: true
     }).populate('provider', 'firstName lastName');
 
+    console.log('Found services:', foundServices.length, 'Expected:', serviceIds.length);
+    
     if (foundServices.length !== serviceIds.length) {
+      console.error('Service mismatch - Service IDs:', serviceIds);
+      console.error('Found service IDs:', foundServices.map(s => s._id));
       return res.status(400).json({
         success: false,
-        message: 'One or more services are not available'
+        message: 'One or more services are not available',
+        requestedServices: serviceIds,
+        foundServices: foundServices.map(s => s._id)
       });
     }
 

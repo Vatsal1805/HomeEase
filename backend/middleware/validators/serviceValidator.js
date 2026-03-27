@@ -22,30 +22,62 @@ const nearbyStatsValidation = [
 // Create service validation
 const createServiceValidation = [
   body('name')
+    .trim()
     .notEmpty()
     .withMessage('Service name is required')
     .isLength({ max: 100 })
     .withMessage('Service name cannot exceed 100 characters'),
   body('description')
+    .trim()
     .notEmpty()
     .withMessage('Service description is required')
     .isLength({ max: 500 })
     .withMessage('Description cannot exceed 500 characters'),
   body('category')
+    .trim()
+    .notEmpty()
+    .withMessage('Category is required')
     .isIn(['plumbing', 'electrical', 'cleaning', 'carpentry', 'ac-service', 'painting'])
-    .withMessage('Invalid category'),
+    .withMessage('Invalid category. Must be one of: plumbing, electrical, cleaning, carpentry, ac-service, painting'),
   body('price')
-    .isNumeric()
-    .isFloat({ min: 0 })
-    .withMessage('Price must be a positive number'),
+    .notEmpty()
+    .withMessage('Price is required')
+    .toFloat()
+    .custom((value) => {
+      if (isNaN(value)) {
+        throw new Error('Price must be a valid number');
+      }
+      if (value <= 0) {
+        throw new Error('Price must be greater than 0');
+      }
+      return true;
+    }),
   body('duration')
-    .isInt({ min: 15 })
-    .withMessage('Duration must be at least 15 minutes'),
+    .notEmpty()
+    .withMessage('Duration is required')
+    .toInt()
+    .custom((value) => {
+      if (isNaN(value)) {
+        throw new Error('Duration must be a valid number');
+      }
+      if (value < 15) {
+        throw new Error('Duration must be at least 15 minutes');
+      }
+      return true;
+    }),
   body('image')
+    .trim()
     .notEmpty()
     .withMessage('Service image is required')
-    .isURL()
-    .withMessage('Service image must be a valid URL')
+    .custom((value) => {
+      // More flexible URL validation for image URLs
+      try {
+        new URL(value);
+        return true;
+      } catch (e) {
+        throw new Error('Service image must be a valid URL (e.g., https://example.com/image.jpg)');
+      }
+    }),
 ];
 
 // Update service validation
@@ -64,20 +96,33 @@ const updateServiceValidation = [
     .withMessage('Invalid category'),
   body('price')
     .optional()
-    .isNumeric()
-    .isFloat({ min: 0 })
-    .withMessage('Price must be a positive number'),
+    .toFloat()
+    .custom((value) => {
+      if (value !== undefined && (isNaN(value) || value < 0)) {
+        throw new Error('Price must be a positive number');
+      }
+      return true;
+    }),
   body('duration')
     .optional()
-    .isInt({ min: 15 })
-    .withMessage('Duration must be at least 15 minutes'),
+    .toInt()
+    .custom((value) => {
+      if (value !== undefined && (isNaN(value) || value < 15)) {
+        throw new Error('Duration must be at least 15 minutes');
+      }
+      return true;
+    }),
   body('image')
     .optional()
-    .isURL()
-    .withMessage('Service image must be a valid URL')
+    .trim()
     .custom((value) => {
-      if (value !== undefined && value.trim() === '') {
-        throw new Error('Service image cannot be empty');
+      if (value) {
+        try {
+          new URL(value);
+          return true;
+        } catch (e) {
+          throw new Error('Service image must be a valid URL (e.g., https://example.com/image.jpg)');
+        }
       }
       return true;
     })

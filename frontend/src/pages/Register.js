@@ -31,11 +31,40 @@ const Register = () => {
     const { name, value } = e.target;
     if (name.startsWith('providerDetails.')) {
       const field = name.split('.')[1];
+      let finalValue = value;
+
+      // PAN Number format: 5 letters + 4 digits + 1 letter (e.g., ABCDE1234F)
+      if (field === 'panNumber') {
+        finalValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+        
+        // Enforce format: positions 0-4 must be letters, 5-8 must be digits, position 9 must be letter
+        let formattedPan = '';
+        for (let i = 0; i < finalValue.length; i++) {
+          const char = finalValue[i];
+          const isLetter = /[A-Z]/.test(char);
+          const isDigit = /[0-9]/.test(char);
+
+          // Positions 0-4: only letters
+          if (i < 5) {
+            if (isLetter) formattedPan += char;
+          }
+          // Positions 5-8: only digits
+          else if (i < 9) {
+            if (isDigit) formattedPan += char;
+          }
+          // Position 9: only letter
+          else if (i === 9) {
+            if (isLetter) formattedPan += char;
+          }
+        }
+        finalValue = formattedPan;
+      }
+
       setFormData({
         ...formData,
         providerDetails: {
           ...formData.providerDetails,
-          [field]: value
+          [field]: finalValue
         }
       });
     } else {
@@ -410,14 +439,16 @@ const Register = () => {
                       required
                       value={formData.providerDetails.panNumber}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="e.g., ABCDE1234F"
+                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent uppercase tracking-widest"
+                      placeholder="ABCDE1234F"
                       maxLength="10"
-                      style={{ textTransform: 'uppercase' }}
+                      style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}
                     />
                     <i className="fas fa-id-card absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Format: 5 letters + 4 numbers + 1 letter</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Format: 5 letters (A-Z) + 4 digits (0-9) + 1 letter (A-Z) | Restricted input for security
+                  </p>
                 </div>
 
                 {/* Business Type */}

@@ -26,12 +26,8 @@ const ManageServices = () => {
     'plumbing',
     'electrical',
     'carpentry',
-    'painting',
-    'gardening',
-    'appliance-repair',
-    'pest-control',
-    'home-maintenance',
-    'other'
+    'ac-service',
+    'painting'
   ];
 
   useEffect(() => {
@@ -149,11 +145,15 @@ const ManageServices = () => {
     
     try {
       const serviceData = {
-        ...formData,
-        price: parseFloat(formData.price),
-        duration: parseInt(formData.duration),
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        category: formData.category,
+        price: formData.price,
+        duration: formData.duration,
+        image: formData.image.trim()
       };
+
+      console.log('Submitting service data:', serviceData);
 
       const response = await axios.post('/api/services', serviceData);
       
@@ -172,7 +172,25 @@ const ManageServices = () => {
         setShowAddForm(false);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to add service');
+      console.error('Service creation error - Full response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.log('Validation errors array:', error.response?.data?.errors);
+      
+      // Show detailed validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        const errorMessages = error.response.data.errors
+          .map(err => {
+            console.log('Individual error:', err);
+            return `${err.field}: ${err.message}`;
+          })
+          .join('\n');
+        console.error('Formatted error messages:\n', errorMessages);
+        toast.error(`Validation Error:\n${errorMessages}`);
+      } else {
+        const message = error.response?.data?.message || 'Failed to add service';
+        console.error('Backend error message:', message);
+        toast.error(message);
+      }
     }
   };
 

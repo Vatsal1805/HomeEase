@@ -127,8 +127,8 @@ const AdminServices = () => {
                 <option value="plumbing">Plumbing</option>
                 <option value="electrical">Electrical</option>
                 <option value="painting">Painting</option>
-                <option value="gardening">Gardening</option>
-                <option value="repair">Repair</option>
+                <option value="carpentry">Carpentry</option>
+                <option value="ac-service">AC Service</option>
               </select>
             </div>
             <div>

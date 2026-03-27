@@ -41,8 +41,10 @@ const registerValidation = [
     .if(body('userType').equals('provider'))
     .notEmpty()
     .withMessage('PAN number is required for providers')
+    .isLength({ min: 10, max: 10 })
+    .withMessage('PAN number must be exactly 10 characters')
     .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)
-    .withMessage('Please enter a valid PAN number'),
+    .withMessage('Invalid PAN format. Example: ABCDE1234F (5 letters + 4 digits + 1 letter)'),
   body('providerDetails.businessType')
     .if(body('userType').equals('provider'))
     .notEmpty()
