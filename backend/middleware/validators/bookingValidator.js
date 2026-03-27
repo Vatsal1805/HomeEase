@@ -4,7 +4,15 @@ const { body } = require('express-validator');
 const createBookingValidation = [
   body('services')
     .isArray({ min: 1 })
-    .withMessage('At least one service must be selected'),
+    .withMessage('At least one service must be selected')
+    .custom((services) => {
+      // Validate each service has serviceId
+      const hasAllServiceIds = services.every(s => s.serviceId);
+      if (!hasAllServiceIds) {
+        throw new Error('Each service must have a serviceId field');
+      }
+      return true;
+    }),
   body('scheduledDate')
     .isISO8601()
     .withMessage('Valid scheduled date is required'),

@@ -158,8 +158,8 @@ const Checkout = () => {
       // Prepare booking data with all services in a single booking
       const bookingData = {
         services: cartItems.map(service => ({
-          service: service._id,
-          quantity: 1
+          serviceId: service._id,
+          quantity: service.quantity || 1
         })),
         scheduledDate: formData.scheduledDate,
         scheduledTime: formData.scheduledTime,
@@ -193,8 +193,8 @@ const Checkout = () => {
       console.log('Error response:', error.response?.data);
       console.log('Request data:', {
         services: cartItems.map(service => ({
-          service: service._id,
-          quantity: 1
+          serviceId: service._id,
+          quantity: service.quantity || 1
         })),
         scheduledDate: formData.scheduledDate,
         scheduledTime: formData.scheduledTime,

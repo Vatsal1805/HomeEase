@@ -308,10 +308,15 @@ const createService = async (req, res) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.error('Validation errors for service creation:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array().map(err => ({
+          field: err.param,
+          message: err.msg,
+          value: err.value
+        }))
       });
     }
 
