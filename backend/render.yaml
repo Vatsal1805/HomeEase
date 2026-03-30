@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: homeease-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: homeease-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: PORT
+        value: 5000
+      - key: FRONTEND_URL
+        value: https://homeease.vercel.app
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        value: https://homeease-backend.onrender.com/api/auth/google/callback
+      - key: FACEBOOK_APP_ID
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: FACEBOOK_CALLBACK_URL
+        value: https://homeease-backend.onrender.com/api/auth/facebook/callback
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@homeease.com
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: homeease-db
+    databaseName: homeease
+    plan: free

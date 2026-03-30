@@ -1,0 +1,23 @@
+{
+  "buildCommand": "npm run build:prod",
+  "env": {
+    "REACT_APP_API_URL": "@react_app_api_url"
+  },
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}
